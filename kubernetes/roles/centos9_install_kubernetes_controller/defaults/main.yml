@@ -1,0 +1,9 @@
+---
+# defaults file for centos9_install_working_prereqs
+cluster_state: ""
+pod_network_cidr: "10.244.0.0/16"
+controller_hostname: "kcontroller001"
+
+kubernetesVersion: stable
+calico_manifest: https://github.com/projectcalico/calico/blob/master/manifests/calico.yaml
+kubernetes_apiport: 6443

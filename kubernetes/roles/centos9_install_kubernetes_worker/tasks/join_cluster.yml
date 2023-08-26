@@ -1,0 +1,10 @@
+- name: join cluster
+  shell: |
+    kubeadm join \
+      --token "{{ token_result.stdout }}" "{{ controller_hostname }}":6443 \
+      --discovery-token-ca-cert-hash "{{ cacert_format }}:{{ tokenca_result.stdout }}"
+  become: yes
+  register: join_result
+
+- debug:
+    msg: "{{ join_result }}"

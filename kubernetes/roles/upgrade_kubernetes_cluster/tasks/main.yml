@@ -1,0 +1,13 @@
+---
+# tasks file for upgrade_kubernetes_cluster
+
+- include_tasks: yum_update.yml
+
+- include_tasks: drain_controller.yml
+
+- include_tasks: get_kubeadm_upgrade_plan.yml
+
+- include_tasks: apply_upgrade.yml
+
+- include_tasks: update_nodes.yml
+

@@ -1,0 +1,23 @@
+- block: 
+    - name: get node status
+      shell: |
+        export KUBECONFIG=/etc/kubernetes/admin.conf
+        kubectl get nodes -A -o wide
+      become: yes
+      register: node_result
+
+    - debug:
+        msg: "{{ node_result.stdout_lines }}"
+
+    - name: get pods status
+      shell: |
+        export KUBECONFIG=/etc/kubernetes/admin.conf
+        kubectl get pods -n kube-system -o wide
+      become: yes
+      register: pods_result
+
+    - debug:
+        msg: "{{ pods_result.stdout_lines }}"
+  rescue:
+    - debug:
+        msg: "Failed to return a status for {{ controller_hostname }}:6443"

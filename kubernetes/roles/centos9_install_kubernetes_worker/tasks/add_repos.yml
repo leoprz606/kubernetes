@@ -1,0 +1,22 @@
+
+- name: add the kubernetes repo
+  shell: |
+    cat <<EOF | sudo tee /etc/yum.repos.d/kubernetes.repo
+    [kubernetes]
+    name=Kubernetes
+    baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-\$basearch
+    enabled=1
+    gpgcheck=1
+    gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+    exclude=kubelet kubeadm kubectl
+    EOF
+  become: yes
+
+- name: add the docker repo
+  shell: |
+    cat <<EOF | sudo tee /etc/yum.repos.d/docker.repo
+    [docker]
+    baseurl=https://download.docker.com/linux/centos/8/x86_64/stable/
+    gpgcheck=0
+    EOF
+  become: yes

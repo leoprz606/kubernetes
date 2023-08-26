@@ -1,0 +1,35 @@
+- name: verify Kubernetes api port
+  shell: |
+    telnet "{{ controller_hostname }}" "{{ kubernetes_apiport }}" | grep -v "Connection refused" \
+      | grep "Connected to" | grep -v grep | wc -l
+  register: check_result
+
+- block: 
+    - name: run kubeadm
+      shell: |
+        kubeadm init --pod-network-cidr "{{ pod_network_cidr }}"
+      register: run_kubeadm_result
+      become: yes
+  rescue:
+    - debug:
+        msg: "A Kubernetes cluster is already installed on this node."
+      when: run_kubeadm_result.stderr.find('is in use') != -1
+    - fail:
+        msg: "{{ run_kubeadm_result }}"
+      when: run_kubeadm_result.stderr.find('is in use') == -
+  when: check_result.stdout == "0"
+
+- name: verify Kubernetes api port
+  shell: |
+    telnet "{{ controller_hostname }}" "{{ kubernetes_apiport }}" | grep -v "Connection refused" \
+      | grep "Connected to" | grep -v grep | wc -l
+  register: check_result
+
+- block:
+    - name: restart services
+      shell: |
+        systemctl restart containerd
+        systemctl restart kubelet
+    - pause:
+        seconds: 10
+  when: check_result.stdout == "0"

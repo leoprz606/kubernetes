@@ -1,0 +1,8 @@
+---
+# tasks file for backup_etcd_databases
+
+- include_tasks: check_health.yml
+
+- include_tasks: take_snapshot.yml
+
+- include_tasks: backup_snapshots.yml

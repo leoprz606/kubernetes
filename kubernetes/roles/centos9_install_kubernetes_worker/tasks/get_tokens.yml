@@ -1,0 +1,26 @@
+
+- name: get node status
+  shell: |
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubeadm token create
+  become: yes
+  register: token_result
+  delegate_to: "{{ controller_hostname }}"
+
+- name: Join Token
+  debug:
+    msg: "{{ token_result.stdout }}"
+
+- name: get node status
+  shell: |
+    openssl x509 -pubkey \
+      -in /etc/kubernetes/pki/ca.crt | openssl rsa \
+      -pubin -outform der 2>/dev/null | openssl dgst \
+      -{{ cacert_format }} -hex | sed 's/^.* //'
+  become: yes
+  register: tokenca_result
+  delegate_to: "{{ controller_hostname }}"
+
+- name: Discovery Token CA Cert Hash
+  debug:
+    msg: "{{ tokenca_result.stdout }}"

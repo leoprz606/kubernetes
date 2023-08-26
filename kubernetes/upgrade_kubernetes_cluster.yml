@@ -1,0 +1,5 @@
+- hosts: kcontroller001
+  gather_facts: yes
+  tasks:
+    - include_role:
+        name: upgrade_kubernetes_cluster

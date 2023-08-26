@@ -1,0 +1,20 @@
+- name: set hostname
+  shell: |
+    hostnamectl set-hostname "{{ controller_hostname }}"
+  become: yes
+
+- name: set localhost
+  shell: |
+    # Get the IP address
+    ip=$(ip address | grep "inet " | awk '{print $2}' | grep -v "127.0.0.1")[0]
+  register: ip_address
+
+- debug:
+    msg: "{{ ip_address }}"
+
+- fail:
+
+- name: Add the entry to the hosts file
+  shell: |
+    echo "{{ ip_address }} {{ controller_hostname }}" >> /etc/hosts
+  become: yes

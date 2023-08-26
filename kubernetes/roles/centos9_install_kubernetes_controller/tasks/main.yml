@@ -1,0 +1,26 @@
+---
+# tasks file for centos9_install_working_prereqs
+
+- block:
+    #- include_tasks: set_host.yml
+
+    - include_tasks: add_repos.yml
+
+    - include_tasks: os_config.yml
+
+    - include_tasks: install_containerd.yml
+
+    - include_tasks: install_kubernetes.yml
+
+    - include_tasks: create_cluster.yml
+
+    - include_tasks: install_cacert.yml
+
+    - include_tasks: install_cni_calico.yml
+
+  when: cluster_state == "create"
+
+- include_tasks: reset_cluster.yml
+  when: cluster_state == "reset"
+
+- include_tasks: get_status.yml

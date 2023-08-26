@@ -1,0 +1,5 @@
+- hosts: kworker001
+  gather_facts: yes
+  tasks:
+    - include_role:
+        name: centos9_install_kubernetes_worker

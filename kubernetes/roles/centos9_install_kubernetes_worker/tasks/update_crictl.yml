@@ -1,0 +1,8 @@
+
+- name: update critctl
+  shell: |
+    crictl config --set \runtime-endpoint=unix:///run/containerd/containerd.sock /
+      \--set image-endpoint=unix:///run/containerd/containerd.sock
+  become: yes
+  register: update_result
+  delegate_to: "{{ controller_hostname }}"

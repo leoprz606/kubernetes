@@ -1,0 +1,22 @@
+- name: install containerd.io
+  shell: |
+    yum install containerd.io -y
+  become: yes
+
+- name: write defauls to containerd config.toml
+  shell: |
+    containerd config default | tee /etc/containerd/config.toml
+  become: yes
+
+- name: enable SystemdCgroup
+  shell: |
+    sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+  become: yes
+
+- name: restart 
+  shell: |
+    systemctl restart containerd
+  become: yes
+
+- pause:
+    seconds: 10

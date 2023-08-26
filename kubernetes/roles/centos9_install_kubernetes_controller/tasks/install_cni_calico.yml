@@ -1,0 +1,34 @@
+- name: write calico yaml
+  ansible.builtin.template:
+    src: calico.j2
+    dest: /tmp/calico.yml
+  become: yes
+
+- block:
+    - name: run kubeadm with calico yaml
+      shell: |
+        kubectl create -f /tmp/calico.yml
+      become: yes
+      register: calico_result
+  rescue:
+    - debug:
+        msg: "calico-kube-controllers is already installed on this node."
+      when: run_kubeadm_result.stderr.find('already exists') != -1
+    - fail:
+        msg: "{{ calico_result }}"
+      when: run_kubeadm_result.stderr.find('already exists') == -1
+
+- debug:
+    msg: "{{ calico_result.stdout }}"
+
+- name: verify Kubernetes api port
+  shell: |
+    telnet "{{ controller_hostname }}" "{{ kubernetes_apiport }}" | grep -v "Connection refused" \
+      | grep "Connected to" | grep -v grep | wc -l
+  register: check_result
+
+- name: restart services
+  shell: |
+    systemctl restart containerd
+    systemctl restart kubelet
+  when: check_result.stdout == "0"

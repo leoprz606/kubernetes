@@ -1,0 +1,7 @@
+
+- name: retrieve ca certification and add to trust
+  shell: |
+    echo $(kubectl config view --minify --raw --output 'jsonpath={..cluster.certificate-authority-data}' \
+        | base64 -d | openssl x509 -out -) > /etc/pki/ca-trust/source/anchors/kube-ca.crt
+    update-ca-trust
+  become: yes

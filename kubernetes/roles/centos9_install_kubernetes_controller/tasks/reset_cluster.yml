@@ -1,0 +1,9 @@
+- name: reset cluser
+  shell: |
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubeadm reset --force
+  become: yes
+  register: reset_result
+
+- debug:
+    msg: "{{ reset_result }}"
