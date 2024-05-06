@@ -1,22 +1,16 @@
-- name: install containerd.io
+- name: install docker and containerd.io
   shell: |
-    yum install containerd.io -y
-  become: yes
-
-- name: write defauls to containerd config.toml
-  shell: |
-    containerd config default | tee /etc/containerd/config.toml
-  become: yes
-
-- name: enable SystemdCgroup
-  shell: |
+    dnf config-manager --add-repo=https://download.docker.com/linux/centos/docker-ce.repo
+    dnf install https://download.docker.com/linux/centos/7/x86_64/stable/Packages/containerd.io-1.2.6-3.3.el7.x86_64.rpm
+    dnf install docker-ce --nobest -y
+    systemctl start docker
+    systemctl enable docker
+    echo '{
+      "exec-opts": ["native.cgroupdriver=systemd"]
+    }' > /etc/docker/daemon.json
+    
     sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+    containerd config default | tee /etc/containerd/config.toml
+    systemctl restart docker
   become: yes
 
-- name: restart 
-  shell: |
-    systemctl restart containerd
-  become: yes
-
-- pause:
-    seconds: 10
