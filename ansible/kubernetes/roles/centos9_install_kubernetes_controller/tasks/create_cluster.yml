@@ -7,7 +7,7 @@
 - block: 
     - name: run kubeadm
       shell: |
-        kubeadm init --apiserver-advertise-address={{ controllernode_ipaddres }} --pod-network-cidr "{{ pod_network_cidr }}"
+        kubeadm init --pod-network-cidr "{{ pod_network_cidr }}"
       register: run_kubeadm_result
       become: yes
   rescue:
@@ -15,7 +15,7 @@
         msg: "A Kubernetes cluster is already installed on this node."
       when: run_kubeadm_result.stderr.find('is in use') != -1
     - fail:
-        msg: "{{ run_kubeadm_result }}"
+        msg: "{{ run_kubeadm_result | to_json }}"
       when: run_kubeadm_result.stderr.find('is in use') == -
   when: check_result.stdout == "0"
 

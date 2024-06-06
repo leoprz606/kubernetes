@@ -1,8 +1,18 @@
+- name: install cri-tools
+  shell: |
+    if [ -e "{{ critools_rpmrurl.split('/')[-1] }}" ]; then
+        rpm -i "{{ critools_rpmrurl.split('/')[-1] }}"
+    else
+        wget -c "{{ critools_rpmrurl }}"
+        rpm -i "{{ critools_rpmrurl.split('/')[-1] }}"
+    fi
+  become: yes
+  ignore_errors: yes
 
 - name: install kubernetes
   shell: |
-    yum install -y cri-tools
-    yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes --skip-broken
+    yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+    systemctl enable kubelet.service
   register: install_result
   become: yes
 
@@ -11,3 +21,4 @@
     name: kubelet
     enabled: yes
     state: started
+  become: yes

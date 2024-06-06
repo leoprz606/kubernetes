@@ -1,3 +1,9 @@
+- name: remove kubelet service
+  shell: |
+    yum remove kubelet -y
+    yum remove containerd -y
+  become: yes
+
 - name: reset cluser
   shell: |
     export KUBECONFIG=/etc/kubernetes/admin.conf

@@ -30,7 +30,7 @@
 
     - name: kubctl describe node
       debug:
-        msg: "{{ node_result.stdout }}"
+        msg: "{{ node_result.stdout | to_json }}"
 
   when: cluster_state == "create"
 
