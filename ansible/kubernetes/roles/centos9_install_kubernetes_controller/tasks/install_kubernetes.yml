@@ -1,6 +1,8 @@
 
-- shell: |
-    dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+- name: install kubernetes
+  shell: |
+    yum install -y cri-tools
+    yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes --skip-broken
   register: install_result
   become: yes
 
