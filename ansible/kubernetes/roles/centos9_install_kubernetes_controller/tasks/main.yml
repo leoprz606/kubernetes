@@ -18,9 +18,26 @@
 
     - include_tasks: install_cni_calico.yml
 
+    - name: view node status
+      shell: |
+        export KUBECONFIG=/etc/kubernetes/admin.conf
+        kubectl describe node
+      become: yes
+      register: node_result
+
+    - name: kubctl describe node
+      debug:
+        msg: "{{ node_result.stdout }}"
+
   when: cluster_state == "create"
 
 - include_tasks: reset_cluster.yml
   when: cluster_state == "reset"
 
 - include_tasks: get_status.yml
+
+- name: allow controller to host pods
+  shell: |
+    kubectl taint nodes --all  node-role.kubernetes.io/control-plane-
+  become: yes
+

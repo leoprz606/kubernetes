@@ -1,7 +1,8 @@
 - name: disable swap
   shell: |
     swapoff -a
-
+    setenforce 0
+    sed -i --follow-symlinks 's/SELINUX=enforcing/SELINUX=disabled/g' /etc/sysconfig/selinux
 - name: load modules
   shell: |
     modprobe overlay

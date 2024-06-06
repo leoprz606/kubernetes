@@ -1,6 +1,6 @@
 
 - shell: |
-    yum install -y kubelet kubeadm kubectl --disableexcludes=Kubernetes
+    dnf install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
   register: install_result
   become: yes
 

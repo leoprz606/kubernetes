@@ -7,6 +7,7 @@
 - block:
     - name: run kubeadm with calico yaml
       shell: |
+        export KUBECONFIG=/etc/kubernetes/admin.conf
         kubectl create -f /tmp/calico.yml
       become: yes
       register: calico_result

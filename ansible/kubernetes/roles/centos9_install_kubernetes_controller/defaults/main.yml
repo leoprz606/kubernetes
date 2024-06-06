@@ -1,9 +1,11 @@
 ---
 # defaults file for centos9_install_working_prereqs
-cluster_state: ""
+cluster_state: "create"
 pod_network_cidr: "10.244.0.0/16"
-controller_hostname: "kcontroller001"
+controller_hostname: "awx-prod-optr-01"
+controllernode_ipaddres: "10.212.137.95"
+
 
 kubernetesVersion: stable
-calico_manifest: https://github.com/projectcalico/calico/blob/master/manifests/calico.yaml
+calico_manifest: https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
 kubernetes_apiport: 6443
