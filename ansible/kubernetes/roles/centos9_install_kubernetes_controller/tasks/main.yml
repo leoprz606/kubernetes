@@ -18,6 +18,11 @@
 
     - include_tasks: install_cni_calico.yml
 
+    - name: allow controller to host pods
+      shell: |
+        kubectl taint nodes --all  node-role.kubernetes.io/control-plane-
+      become: yes
+
     - name: view node status
       shell: |
         export KUBECONFIG=/etc/kubernetes/admin.conf
@@ -36,8 +41,5 @@
 
 - include_tasks: get_status.yml
 
-- name: allow controller to host pods
-  shell: |
-    kubectl taint nodes --all  node-role.kubernetes.io/control-plane-
-  become: yes
+
 

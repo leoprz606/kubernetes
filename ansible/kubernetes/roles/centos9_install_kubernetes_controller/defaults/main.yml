@@ -2,7 +2,7 @@
 # defaults file for centos9_install_working_prereqs
 cluster_state: "create"
 pod_network_cidr: "10.244.0.0/16"
-controller_hostname: "awx-prod-optr-01"
+controller_hostname: "awx-prod-opr-01"
 controllernode_ipaddres: "10.212.137.95"
 
 
