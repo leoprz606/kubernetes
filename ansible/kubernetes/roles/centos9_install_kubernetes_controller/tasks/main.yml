@@ -2,9 +2,9 @@
 # tasks file for centos9_install_working_prereqs
 
 - block:
-    #- include_tasks: set_host.yml
-
     - include_tasks: os_config.yml
+
+    - include_tasks: add_repos.yml
 
     - include_tasks: install_containerd.yml
 

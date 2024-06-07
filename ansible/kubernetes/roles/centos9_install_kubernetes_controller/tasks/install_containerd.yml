@@ -13,8 +13,7 @@
     echo '{
       "exec-opts": ["native.cgroupdriver=systemd"]
     }' > /etc/docker/daemon.json
-    
-    #sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+    sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
     containerd config default | tee /etc/containerd/config.toml
     systemctl restart docker
   become: yes

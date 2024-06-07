@@ -3,7 +3,7 @@
 cluster_state: "create"
 pod_network_cidr: "10.244.0.0/16"
 controller_hostname: "awx-dev-01"
-controllernode_ipaddres: "10.212.137.99"
+controllernode_ipaddres: "10.212.136.181"
 
 kubernetesVersion: stable
 calico_manifest: https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
