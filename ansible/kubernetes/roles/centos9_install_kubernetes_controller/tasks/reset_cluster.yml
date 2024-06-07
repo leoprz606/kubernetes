@@ -1,15 +1,29 @@
-- name: remove kubelet service
-  shell: |
-    yum remove kubelet -y
-    yum remove containerd -y
-  become: yes
-
 - name: reset cluser
   shell: |
     export KUBECONFIG=/etc/kubernetes/admin.conf
     kubeadm reset --force
   become: yes
   register: reset_result
+
+- name: start and enable kubelet service
+  ansible.builtin.service:
+    name: kubelet
+    enabled: yes
+    state: restarted
+  become: yes
+  ignore_errors: yes
+
+- name: remove kubelet service
+  shell: |
+    yum remove kubelet -y
+    yum remove containerd -y
+    yum remove docker -y
+  become: yes
+
+- name: remove /etc/cni/net.d
+  shell: |
+    rm -rf /etc/cni/net.d
+  become: yes
 
 - debug:
     msg: "{{ reset_result }}"

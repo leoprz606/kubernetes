@@ -7,7 +7,7 @@
 - block: 
     - name: run kubeadm
       shell: |
-        kubeadm init --pod-network-cidr "{{ pod_network_cidr }}"
+        kubeadm init --apiserver-advertise-address="{{ controllernode_ipaddres }}" --pod-network-cidr "{{ pod_network_cidr }}"
       register: run_kubeadm_result
       become: yes
   rescue:
