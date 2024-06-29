@@ -1,0 +1,5 @@
+- hosts: "{{ worker_hostname }}"
+  gather_facts: yes
+  tasks:
+    - include_role:
+        name: install_kubernetes_worker

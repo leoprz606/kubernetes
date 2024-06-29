@@ -1,0 +1,19 @@
+- name: install docker
+  shell: |
+    yum update -y
+    yum search docker
+    yum info docker
+    yum install docker -y
+
+    systemctl start docker
+    systemctl enable docker
+
+- name: install containerd.io
+  shell: |
+    echo '{
+      "exec-opts": ["native.cgroupdriver=systemd"]
+    }' > /etc/docker/daemon.json
+    sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+    containerd config default | tee /etc/containerd/config.toml
+    systemctl restart docker
+  become: yes

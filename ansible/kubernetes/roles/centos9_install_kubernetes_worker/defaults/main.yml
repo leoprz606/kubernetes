@@ -1,8 +1,0 @@
----
-# defaults file for centos9_install_working_prereqs
-worker_hostname: "kworker001"
-controller_hostname: "kcontroller001"
-
-kubernetesVersion: stable
-kubernetes_apiport: 6443
-cacert_format: sha256
