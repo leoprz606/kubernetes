@@ -2,7 +2,7 @@ export ANSIBLE_BECOME=true
 
 #controller create, reset
 ansible_become=true ansible-playbook \
-../ansible/kubernetes/install_kubernetes_controller.yml \
+../ansible/centos9/kubernetes/install_kubernetes_controller.yml \
 -b -e "cluster_state=create"
 
 # worker reset, join
