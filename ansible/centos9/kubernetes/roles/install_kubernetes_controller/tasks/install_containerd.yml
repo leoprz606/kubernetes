@@ -1,19 +1,45 @@
-- name: install docker
+- name: Check if Docker service is running
+  command: systemctl is-active docker
+  register: docker_status
+  ignore_errors: true
+  changed_when: false
+
+- name: Install Docker if service is not running
+  block:
+    - name: install docker
+      shell: |
+        yum update -y
+        dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras --allowerasing --nobest
+        yum search docker
+        yum info docker
+        yum install docker -y
+      become: yes
+
+    - name: start and enable services
+      shell: |
+        systemctl start docker
+        systemctl enable docker
+        systemctl start containerd
+        systemctl enable containerd
+      become: yes
+  when: docker_status.stdout != 'active'
+
+- name: write defaults to containerd config.toml
   shell: |
-    yum update -y
-    yum search docker
-    yum info docker
-    yum install docker -y
+    containerd config default | tee /etc/containerd/config.toml
+  become: yes
 
-    systemctl start docker
-    systemctl enable docker
-
-- name: install containerd.io
+- name: update SystemdCgroup in config.toml and docker deamon.json
   shell: |
     echo '{
       "exec-opts": ["native.cgroupdriver=systemd"]
     }' > /etc/docker/daemon.json
     sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
     containerd config default | tee /etc/containerd/config.toml
+  become: yes
+
+- name: restart services
+  shell: |
+    systemctl restart containerd
     systemctl restart docker
   become: yes

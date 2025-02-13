@@ -2,8 +2,8 @@
 # defaults file for centos9_install_working_prereqs
 cluster_state: "create"
 pod_network_cidr: "10.244.0.0/16"
-controller_hostname: "awx-k8-prod-01"
-controllernode_ipaddres: "10.212.137.105"
+controller_hostname: "mediaserver"
+controllernode_ipaddres: "192.168.86.47"
 
 kubernetesVersion: stable
 calico_manifest: https://raw.githubusercontent.com/projectcalico/calico/v3.27.3/manifests/tigera-operator.yaml
