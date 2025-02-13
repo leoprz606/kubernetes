@@ -1,9 +1,15 @@
 export ANSIBLE_BECOME=true
 
-#controller create, reset
+#controller create
 ansible_become=true ansible-playbook \
 ../ansible/centos9/kubernetes/install_kubernetes_controller.yml \
 -b -e "cluster_state=create"
+
+#controller reset
+ansible_become=true ansible-playbook \
+../ansible/centos9/kubernetes/install_kubernetes_controller.yml \
+-b -e "cluster_state=reset"
+
 
 # worker reset, join
 ansible_become=true ansible-playbook \
@@ -23,3 +29,5 @@ systemctl status kubelet
 sudo journalctl -u kubelet
 sudo journalctl -xeu kubelet
 
+
+kubectl describe pod kube-scheduler-mediaserver -n kube-system

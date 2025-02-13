@@ -1,11 +1,13 @@
-- name: Check if Docker service is running
-  command: systemctl is-active docker
-  register: docker_status
-  ignore_errors: true
-  changed_when: false
-
-- name: Install Docker if service is not running
-  block:
+- block:
+  - name: Reload service docker, in all cases
+    ansible.builtin.service:
+      name: docker
+      state: restarted
+  - name: Reload service containerd, in all cases
+    ansible.builtin.service:
+      name: containerd
+      state: restarted
+  rescue:
     - name: install docker
       shell: |
         yum update -y
@@ -14,6 +16,7 @@
         yum info docker
         yum install docker -y
       become: yes
+      ignore_errors: yes
 
     - name: start and enable services
       shell: |
@@ -22,7 +25,6 @@
         systemctl start containerd
         systemctl enable containerd
       become: yes
-  when: docker_status.stdout != 'active'
 
 - name: write defaults to containerd config.toml
   shell: |
