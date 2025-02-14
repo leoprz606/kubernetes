@@ -1,0 +1,47 @@
+- block:
+  - name: Reload service docker, in all cases
+    ansible.builtin.service:
+      name: docker
+      state: restarted
+  - name: Reload service containerd, in all cases
+    ansible.builtin.service:
+      name: containerd
+      state: restarted
+  rescue:
+    - name: install docker
+      shell: |
+        yum update -y
+        dnf install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras --allowerasing --nobest
+        yum search docker
+        yum info docker
+        yum install docker -y
+      become: yes
+      ignore_errors: yes
+
+    - name: start and enable services
+      shell: |
+        systemctl start docker
+        systemctl enable docker
+        systemctl start containerd
+        systemctl enable containerd
+      become: yes
+
+- name: write defaults to containerd config.toml
+  shell: |
+    containerd config default | tee /etc/containerd/config.toml
+  become: yes
+
+- name: update SystemdCgroup in config.toml and docker deamon.json
+  shell: |
+    echo '{
+      "exec-opts": ["native.cgroupdriver=systemd"]
+    }' > /etc/docker/daemon.json
+    sed -e 's/SystemdCgroup = false/SystemdCgroup = true/g' -i /etc/containerd/config.toml
+    containerd config default | tee /etc/containerd/config.toml
+  become: yes
+
+- name: restart services
+  shell: |
+    systemctl restart containerd
+    systemctl restart docker
+  become: yes

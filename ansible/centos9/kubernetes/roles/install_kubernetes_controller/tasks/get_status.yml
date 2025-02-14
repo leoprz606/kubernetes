@@ -21,3 +21,22 @@
   rescue:
     - debug:
         msg: "Failed to return a status for {{ controller_hostname }}:6443"
+
+- pause:
+    seconds: 5
+
+- name: get status if 0/ is present
+  include_tasks: get_status.yml
+  when: pods_result | regex_search('0/') or pods_result | regex_search('NotReady')
+
+
+- name: get controller node status
+  shell: |
+    export KUBECONFIG=/etc/kubernetes/admin.conf
+    kubectl describe node {{ controller_hostname }}
+  become: yes
+  register: cntrlnode_result
+
+- debug:
+    msg: "kubectl describe node {{ controller_hostname }} output contains NotReady. Please investigate"
+  when: cntrlnode_result | regex_search('NotReady')

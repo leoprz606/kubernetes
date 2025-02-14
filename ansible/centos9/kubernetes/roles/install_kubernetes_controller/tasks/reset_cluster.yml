@@ -17,7 +17,6 @@
   shell: |
     yum remove kubelet -y
     yum remove containerd -y
-    yum remove docker -y
   become: yes
 
 - name: remove /etc/cni/net.d

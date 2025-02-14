@@ -18,16 +18,3 @@ ansible_become=true ansible-playbook \
 -i inventory
 
 
-
-# troubleshoot
-
-systemctl status containerd
-systemctl status docker
-
-systemctl status kubelet
-
-sudo journalctl -u kubelet
-sudo journalctl -xeu kubelet
-
-
-kubectl describe pod kube-scheduler-mediaserver -n kube-system
